@@ -7,7 +7,7 @@ library: {
 			AddLabel(<string> text)
 			AddButton(<string> title, <function> callback)
 			AddTextBox(<string> title, <function> callback, <table> options [clear = true]) -- callback args: <string> text
-			AddSwitch(AimLock, <function> callback) -- callback args: <boolean> statement
+			AddSwitch(AimLock, print "hello world" wait (1)) -- callback args: <boolean> statement
 			-> {
 				Set(<boolean> statement)
 			}
