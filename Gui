@@ -1,1 +1,492 @@
-local Window = library:AddWindow("Main",
+Function Map:
+library: {
+	AddWindow(Q1REDHUB)
+	-> {
+		AddTab(Main)
+		-> {
+			AddLabel()
+			AddButton(<string> title, <function> callback)
+			AddTextBox(<string> title, <function> callback, <table> options [clear = true]) -- callback args: <string> text
+			AddSwitch(aimlock, getgenv().keytoclick = "C"
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = keytoclick
+tool.Activated:connect(function()
+    local vim = game:service("VirtualInputManager")
+vim:SendKeyEvent(true, keytoclick, false, game)
+end)
+tool.Parent = game.Players.LocalPlayer.Backpack
+wait(0.2)
+local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
+local Notify = AkaliNotif.Notify;
+Notify({
+Description = "/tapn";
+Title = "#1 Da Hood Vault & CFGS";
+Duration = 10;
+})
+
+local player = game.Players.LocalPlayer
+
+local function connectCharacterAdded()
+    player.CharacterAdded:Connect(onCharacterAdded)
+end
+
+connectCharacterAdded()
+
+player.CharacterRemoving:Connect(function()
+    tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+
+local Settings = {
+    rewrittenmain = {
+        Enabled = true,
+        Key = "c",
+        DOT = true,
+        AIRSHOT = true,
+        NOTIF = true,
+        AUTOPRED = false,
+        FOV = math.huge,
+        RESOVLER = false
+    }
+}
+ 
+local SelectedPart = "HumanoidRootPart"
+local Prediction = true
+local PredictionValue = 0.12389724521
+ 
+ 
+    local AnchorCount = 0
+    local MaxAnchor = 50
+ 
+    local CC = game:GetService"Workspace".CurrentCamera
+    local Plr;
+    local enabled = false
+    local accomidationfactor = 0.1384
+    local mouse = game.Players.LocalPlayer:GetMouse()
+    local placemarker = Instance.new("Part", game.Workspace)
+ 
+    function makemarker(Parent, Adornee, Color, Size, Size2)
+        local e = Instance.new("BillboardGui", Parent)
+        e.Name = "PP"
+        e.Adornee = Adornee
+        e.Size = UDim2.new(Size, Size2, Size, Size2)
+        e.AlwaysOnTop = Settings.rewrittenmain.DOT
+        local a = Instance.new("Frame", e)
+        if Settings.rewrittenmain.DOT == true then
+        a.Size = UDim2.new(1, 0, 1, 0)
+        else
+        a.Size = UDim2.new(0, 0, 0, 0)
+        end
+        if Settings.rewrittenmain.DOT == true then
+        a.Transparency = 0
+        a.BackgroundTransparency = 0
+        else
+        a.Transparency = 1
+        a.BackgroundTransparency = 1
+        end
+        a.BackgroundColor3 = Color
+        local g = Instance.new("UICorner", a)
+        if Settings.rewrittenmain.DOT == false then
+        g.CornerRadius = UDim.new(0, 0)
+        else
+        g.CornerRadius = UDim.new(1, 1) 
+        end
+        return(e)
+    end
+ 
+ 
+    local data = game.Players:GetPlayers()
+    function noob(player)
+        local character
+        repeat wait() until player.Character
+        local handler = makemarker(guimain, player.Character:WaitForChild(SelectedPart), Color3.fromRGB(107, 184, 255), 0.3, 3)
+        handler.Name = player.Name
+        player.CharacterAdded:connect(function(Char) handler.Adornee = Char:WaitForChild(SelectedPart) end)
+ 
+ 
+        spawn(function()
+            while wait() do
+                if player.Character then
+                end
+            end
+        end)
+    end
+ 
+    for i = 1, #data do
+        if data[i] ~= game.Players.LocalPlayer then
+            noob(data[i])
+        end
+    end
+ 
+    game.Players.PlayerAdded:connect(function(Player)
+        noob(Player)
+    end)
+ 
+    spawn(function()
+        placemarker.Anchored = true
+        placemarker.CanCollide = false
+        if Settings.rewrittenmain.DOT == true then
+        placemarker.Size = Vector3.new(8, 8, 8)
+        else
+        placemarker.Size = Vector3.new(0, 0, 0)
+        end
+        placemarker.Transparency = 0.75
+        if Settings.rewrittenmain.DOT then
+        makemarker(placemarker, placemarker, Color3.fromRGB(255, 255, 255), 0.40, 0)
+        end
+    end)
+ 
+    game.Players.LocalPlayer:GetMouse().KeyDown:Connect(function(k)
+        if k == Settings.rewrittenmain.Key and Settings.rewrittenmain.Enabled then
+            if enabled == true then
+                enabled = false
+                if Settings.rewrittenmain.NOTIF == true then
+                    Plr = getClosestPlayerToCursor()
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "GET TAPPED BY RUQUE X VIO";
+                    Text = "Get tapped :)",
+                    Duration = 5
+                })
+            end
+            else
+                Plr = getClosestPlayerToCursor()
+                enabled = true
+                if Settings.rewrittenmain.NOTIF == true then
+ 
+                    game.StarterGui:SetCore("SendNotification", {
+                        Title = "TAPPING ACTIVATED";
+                        Text = "Target: "..tostring(Plr.Character.Humanoid.DisplayName),
+                        Duration = 5
+                    })
+ 
+                end
+            end
+        end
+    end)
+ 
+ 
+ 
+    function getClosestPlayerToCursor()
+        local closestPlayer
+        local shortestDistance = Settings.rewrittenmain.FOV
+ 
+        for i, v in pairs(game.Players:GetPlayers()) do
+            if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") then
+                local pos = CC:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+                local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
+                if magnitude < shortestDistance then
+                    closestPlayer = v
+                    shortestDistance = magnitude
+                end
+            end
+        end
+        return closestPlayer
+    end
+ 
+    local pingvalue = nil;
+    local split = nil;
+    local ping = nil;
+ 
+    game:GetService"RunService".Stepped:connect(function()
+        if enabled and Plr.Character ~= nil and Plr.Character:FindFirstChild("HumanoidRootPart") then
+            placemarker.CFrame = CFrame.new(Plr.Character.HumanoidRootPart.Position+(Plr.Character.HumanoidRootPart.Velocity*accomidationfactor))
+        else
+            placemarker.CFrame = CFrame.new(0, 9999, 0)
+        end
+        if Settings.rewrittenmain.AUTOPRED == true then
+             pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
+             split = string.split(pingvalue,'(')
+             ping = tonumber(split[1])
+            if ping < 130 then
+                PredictionValue = 0.151
+            elseif ping < 125 then
+                PredictionValue = 0.149
+            elseif ping < 110 then
+                PredictionValue = 0.1674367
+            elseif ping < 105 then
+                PredictionValue = 0.16273672
+            elseif ping < 90 then
+                PredictionValue = 0.136
+            elseif ping < 80 then
+                PredictionValue = 0.163
+            elseif ping < 70 then
+                PredictionValue = 0.139
+            elseif ping < 60 then
+                PredictionValue = 0.14427
+            elseif ping < 50 then
+                PredictionValue = 0.135
+            elseif ping < 40 then
+                PredictionValue = 0.1244
+            end
+        end
+    end)
+ 
+    local mt = getrawmetatable(game)
+    local old = mt.__namecall
+    setreadonly(mt, false)
+    mt.__namecall = newcclosure(function(...)
+        local args = {...}
+        if enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" and Settings.rewrittenmain.Enabled and Plr.Character ~= nil then
+ 
+            -- args[3] = Plr.Character.HumanoidRootPart.Position+(Plr.Character.HumanoidRootPart.Velocity*accomidationfactor)
+            --[[
+            if Settings.rewrittenmain.AIRSHOT == true then
+                if game.Workspace.Players[Plr.Name].Humanoid:GetState() == Enum.HumanoidStateType.Freefall then -- Plr.Character:WaitForChild("Humanoid"):GetState() == Enum.HumanoidStateType.Freefall
+ 
+                    --// Airshot
+                    args[3] = Plr.Character.LeftFoot.Position+(Plr.Character.LeftFoot.Velocity*PredictionValue)
+ 
+                else
+                    args[3] = Plr.Character.HumanoidRootPart.Position+(Plr.Character.HumanoidRootPart.Velocity*PredictionValue)
+ 
+                end
+            else
+                    args[3] = Plr.Character.HumanoidRootPart.Position+(Plr.Character.HumanoidRootPart.Velocity*PredictionValue)
+            end
+            ]]
+            if Prediction == true then
+ 
+            args[3] = Plr.Character[SelectedPart].Position+(Plr.Character[SelectedPart].Velocity*PredictionValue)
+ 
+            else
+ 
+            args[3] = Plr.Character[SelectedPart].Position
+ 
+            end
+ 
+            return old(unpack(args))
+        end
+        return old(...)
+    end)
+ 
+    game:GetService("RunService").RenderStepped:Connect(function()
+        if Settings.rewrittenmain.RESOVLER == true and Plr.Character ~= nil and enabled and Settings.rewrittenmain.Enabled then
+        if Settings.rewrittenmain.AIRSHOT == true and enabled and Plr.Character ~= nil then
+ 
+            if game.Workspace.Players[Plr.Name].Humanoid:GetState() == Enum.HumanoidStateType.Freefall then -- Plr.Character:WaitForChild("Humanoid"):GetState() == Enum.HumanoidStateType.Freefall
+ 
+                --// Airshot
+ 
+                --// Anchor Check
+ 
+                if Plr.Character ~= nil and Plr.Character.HumanoidRootPart.Anchored == true then
+                    AnchorCount = AnchorCount + 1
+                    if AnchorCount >= MaxAnchor then
+                        Prediction = false
+                        wait(2)
+                        AnchorCount = 0;
+                    end
+                else
+                    Prediction = true
+                    AnchorCount = 0;
+                end
+ 
+                SelectedPart = "LeftFoot"
+ 
+            else
+                --// Anchor Check
+ 
+                if Plr.Character ~= nil and Plr.Character.HumanoidRootPart.Anchored == true then
+                    AnchorCount = AnchorCount + 1
+                    if AnchorCount >= MaxAnchor then
+                        Prediction = false
+                        wait(2)
+                        AnchorCount = 0;
+                    end
+                else
+                    Prediction = true
+                    AnchorCount = 0;
+                end
+ 
+                SelectedPart = "HumanoidRootPart"
+ 
+            end
+            else
+ 
+                --// Anchor Check
+ 
+                if Plr.Character ~= nil and Plr.Character.HumanoidRootPart.Anchored == true then
+                    AnchorCount = AnchorCount + 1
+                    if AnchorCount >= MaxAnchor then
+                        Prediction = false
+                        wait(2)
+                        AnchorCount = 0;
+                    end
+                else
+                    Prediction = true
+                    AnchorCount = 0;
+                end
+ 
+                SelectedPart = "HumanoidRootPart"
+            end
+ 
+        else
+                SelectedPart = "HumanoidRootPart"
+        end
+    end)
+			-> {
+				Set(<boolean> statement)
+			}
+			AddSlider(<string> title, <function> callback, <table> options [min = 0, max = 100, readonly = false]) -- callback args: <number> number selected
+			-> {
+				Set(<number> number)
+			}
+			AddKeybind(<string> title, <function> callback, <table> options [standard = Enum.KeyCode.RightShift])
+			-> {
+				SetKeybind(<Enum> keycode object)
+			}
+			AddDropdown(<string> title, <function> callback) -- callback args: <string> selected object name
+			-> {
+				Add(<string> title) -- adds object with ("title") to the dropdown list
+				-> {
+					Remove() -- removes the object from the dropdown list
+				}
+			}
+			AddColorPicker(<function> callback) -- callback args: <Color3> color selected
+			-> {
+				Set(<Color3> color)
+			}
+			AddConsole(<table> options [y = 200 (height of the console), full = false (fills out entire tab), source = "Lua" (or "Logs"), readonly = true])
+			-> {
+				Get() -- returns input
+				Set(<string> input) -- sets input
+				Log(<string> message) -- adds a message to the console
+			}
+			AddHorizontalAlignment() -- creates empty ui-element, will align elements horizontally (buttons only)
+			-> {
+				AddButton(...) -- same as other AddButton, except it will be placed horizontally
+			}
+			AddFolder(<string> title)
+			-> {
+				-- returns the same as AddTab, except functions used from this return will be added into the folder.
+			}
+
+			Show() -- function to open tab
+		}
+	}
+
+	FormatWindows() -- will place the current windows nicely. this function is recommended to use after UI setup.
+}
+
+To create a new window, simply use the following function:
+local window = library:AddWindow(<string> title, <table> options) -- Keep in mind that the options argument is not necessary, if you just leave it nil, it will use the default ui_options table, which is located at the top.
+
+Notice how I assign the window to a variable ("window"). This is because the function returns a table consisting of more functions, which you can use on this window.
+
+To add a tab to our window, we can use the following function:
+local tab = window:AddTab()
+This function will also return a table with functions.
+To make this tab *show* as first thing, we will add this:
+tab:Show()
+
+Now we can begin adding stuff to this tab!
+
+[Examples]:
+AddLabel:
+```
+tab:AddLabel("Hello World!")
+```
+
+AddButton:
+```
+tab:AddButton("Give ...", function()
+	print("Gave ... !")
+end)
+```
+
+AddTextBox:
+```
+tab:AddTextBox("Teleport to Player", function(text)
+	teleport_to(game:GetService("Players"):FindFirstChild("text") or game:GetService("Players").LocalPlayer)
+end)
+```
+
+AddSwitch:
+```
+local switch = tab:AddSwitch("God Mode", function(bool)
+	toggle_god_mode(bool)
+end)
+switch:Set(true)
+```
+
+AddSlider:
+```
+local slider = tab:AddSlider("WalkSpeed", function(p)
+	setwalkspeed(p)
+end, {
+	["min"] = 16,
+	["max"] = 100,
+})
+slider:Set(16)
+```
+
+AddKeybind:
+```
+local keybind = tab:AddKeybind("Toggle", function(obj)
+	ui_options.toggle_key = obj
+end, {
+	["standard"] = Enum.KeyCode.RightShift,
+})
+```
+
+AddDropdown:
+```
+local dropdown = tab:AddDropdown("Teleport to Location", function(text)
+	if text == "Mars" then
+		teleport(CFrame.new(...))
+	elseif ...
+	end
+end)
+local mars = dropdown:Add("Mars")
+local earth = dropdown:Add("Earth")
+local not_a_planet = dropdown:Add("Iridocyclitis")
+not_a_planet:Remove()
+```
+
+AddColorPicker:
+```
+tab:AddLabel("Theme color")
+local cp = tab:AddColorPicker(function(color)
+	ui_options.main_color = color
+end)
+```
+
+AddFolder:
+```
+local folder = tab:AddFolder()
+folder:AddSwitch()
+folder:AddLabel("Woo! I'm inside a folder!")
+
+local folder2 = folder:AddFolder()
+folder2:AddLabel("I'm inside *two* folders :smirk:")
+```
+
+[Adding Options]:
+The only two element-functions taking options right now is "AddSlider" and "AddTextBox".
+To set options, simply add a table as the last argument, like this:
+```
+tab:AddSlider("WalkSpeed", function(x)
+	setwalkspeed(x)
+end, {
+	["min"] = 16, -- default : 0
+	["max"] = 100, -- default : 100
+})
+```
+
+Now for AddTextBox example:
+```
+tab:AddTextBox("Epic", function(text)
+	print("TextBox : " .. text)
+end, {
+	["clear"] = false, -- default : true
+})
+```
+
+AddConsole example:
+```
+tab:AddConsole({
+	["y"] = 210,
+	["readonly"] = false,
+	["source"] = "Lua",
+})
+```
